@@ -1,0 +1,605 @@
+{
+  "exp3": [
+    {
+      "query": "emet",
+      "target": "אמת",
+      "note": "vs מת (met) collision",
+      "qkeys": [
+        "MT"
+      ],
+      "qRefined": "aMaT",
+      "candidateCount": 119,
+      "top10Before": [
+        "אמות",
+        "מתי",
+        "מאתות",
+        "ימות",
+        "מות",
+        "מיתה",
+        "ומאת",
+        "מאות",
+        "המטה",
+        "מתו"
+      ],
+      "top10After": [
+        "המעט (aMaT, sim=1.000)",
+        "האמהת (aMaT, sim=1.000)",
+        "אמהות (aMauT, sim=0.950)",
+        "האמהות (aMauT, sim=0.950)",
+        "המאות (aMauT, sim=0.950)",
+        "הממעיט (aMaiT, sim=0.950)",
+        "מאת (MaT, sim=0.938)",
+        "ממעטת (MaT, sim=0.938)",
+        "אמתת (aMT, sim=0.938)",
+        "מעט (MaT, sim=0.938)"
+      ],
+      "rankAfter": 11,
+      "rank1": false
+    },
+    {
+      "query": "met",
+      "target": "מת",
+      "note": "vs אמת (emet) collision",
+      "qkeys": [
+        "MT"
+      ],
+      "qRefined": "MaT",
+      "candidateCount": 119,
+      "top10Before": [
+        "אמות",
+        "מתי",
+        "מאתות",
+        "ימות",
+        "מות",
+        "מיתה",
+        "ומאת",
+        "מאות",
+        "המטה",
+        "מתו"
+      ],
+      "top10After": [
+        "מאת (MaT, sim=1.000)",
+        "ממעטת (MaT, sim=1.000)",
+        "מעט (MaT, sim=1.000)",
+        "מעת (MaT, sim=1.000)",
+        "מאות (MauT, sim=0.938)",
+        "מאתו (MaTu, sim=0.938)",
+        "מעתה (MaTa, sim=0.938)",
+        "מאתי (MaTi, sim=0.938)",
+        "מעוט (MauT, sim=0.938)",
+        "המעט (aMaT, sim=0.938)"
+      ],
+      "rankAfter": 17,
+      "rank1": false
+    },
+    {
+      "query": "shabbos",
+      "target": "שבת",
+      "note": "must NOT prefer שבעת (shivah)",
+      "qkeys": [
+        "$BS",
+        "$BT"
+      ],
+      "qRefined": "$aBuS",
+      "candidateCount": 78,
+      "top10Before": [
+        "שפשה",
+        "שבת",
+        "עשות",
+        "שהעופות",
+        "שיושבת",
+        "שביעיות",
+        "ושבט",
+        "שבעת",
+        "שבועות",
+        "ישבתו"
+      ],
+      "top10After": [
+        "שהאבות ($aBuT, sim=0.800)",
+        "שהעופות ($auBuT, sim=0.792)",
+        "שפוט ($BuT, sim=0.750)",
+        "שהבת ($aBT, sim=0.750)",
+        "שבות ($BuT, sim=0.750)",
+        "שביעיות ($BiaiuT, sim=0.714)",
+        "השיבותי (a$iBuTi, sim=0.714)",
+        "הישיבות (ai$iBuT, sim=0.714)",
+        "השבועות (a$BuauT, sim=0.714)",
+        "שבועות ($BuauT, sim=0.708)"
+      ],
+      "rankAfter": 18,
+      "rank1": false
+    },
+    {
+      "query": "olam",
+      "target": "עולם",
+      "note": "",
+      "qkeys": [
+        "LM"
+      ],
+      "qRefined": "uLaM",
+      "candidateCount": 79,
+      "top10Before": [
+        "לעמו",
+        "להם",
+        "העולם",
+        "אלהים",
+        "למה",
+        "למים",
+        "עליהם",
+        "ולימים",
+        "לעולם",
+        "עולמים"
+      ],
+      "top10After": [
+        "להם (LaM, sim=0.938)",
+        "לאם (LaM, sim=0.938)",
+        "לעם (LaM, sim=0.938)",
+        "להמם (LaM, sim=0.938)",
+        "לעמו (LaMu, sim=0.875)",
+        "העולם (auLM, sim=0.875)",
+        "לאים (LaiM, sim=0.875)",
+        "עולם (auLM, sim=0.875)",
+        "לאמה (LaMa, sim=0.875)",
+        "למ (LM, sim=0.875)"
+      ],
+      "rankAfter": 8,
+      "rank1": false
+    },
+    {
+      "query": "lecha",
+      "target": "לך",
+      "note": "",
+      "qkeys": [
+        "LK"
+      ],
+      "qRefined": "LaKa",
+      "candidateCount": 91,
+      "top10Before": [
+        "לך",
+        "לכך",
+        "הולך",
+        "ההלך",
+        "לקחו",
+        "לקח",
+        "לקחה",
+        "לק",
+        "אליך",
+        "לחיי"
+      ],
+      "top10After": [
+        "לאחיה (LaKia, sim=0.950)",
+        "לקחה (LKa, sim=0.938)",
+        "לקה (LKa, sim=0.938)",
+        "לכה (LKa, sim=0.938)",
+        "לחה (LKa, sim=0.938)",
+        "לאח (LaK, sim=0.938)",
+        "לך (LK, sim=0.875)",
+        "לכך (LK, sim=0.875)",
+        "לקח (LK, sim=0.875)",
+        "לק (LK, sim=0.875)"
+      ],
+      "rankAfter": 7,
+      "rank1": false
+    },
+    {
+      "query": "elohecha",
+      "target": "אלהיך",
+      "note": "",
+      "qkeys": [
+        "LK"
+      ],
+      "qRefined": "aLuaKa",
+      "candidateCount": 91,
+      "top10Before": [
+        "לך",
+        "לכך",
+        "הולך",
+        "ההלך",
+        "לקחו",
+        "לקח",
+        "לקחה",
+        "לק",
+        "אליך",
+        "לחיי"
+      ],
+      "top10After": [
+        "הלוקה (aLuKa, sim=0.958)",
+        "הלוך (aLuK, sim=0.917)",
+        "הלכה (aLKa, sim=0.917)",
+        "אלכה (aLKa, sim=0.917)",
+        "הלקה (aLKa, sim=0.917)",
+        "ההלכה (aLKa, sim=0.917)",
+        "העלוך (aLuK, sim=0.917)",
+        "לוקה (LuKa, sim=0.917)",
+        "הלוקח (aLuK, sim=0.917)",
+        "אלהך (aLaK, sim=0.917)"
+      ],
+      "rankAfter": 18,
+      "rank1": false
+    },
+    {
+      "query": "torah",
+      "target": "תורה",
+      "note": "",
+      "qkeys": [
+        "TR"
+      ],
+      "qRefined": "TuRa",
+      "candidateCount": 74,
+      "top10Before": [
+        "התורה",
+        "טיר",
+        "יותר",
+        "התיר",
+        "תורה",
+        "תראה",
+        "טרא",
+        "הטהורה",
+        "טהורה",
+        "טהרה"
+      ],
+      "top10After": [
+        "תורה (TuRa, sim=1.000)",
+        "טורא (TuRa, sim=1.000)",
+        "התורה (aTuRa, sim=0.950)",
+        "טהורה (TauRa, sim=0.950)",
+        "תוריא (TuRia, sim=0.950)",
+        "תראה (TRa, sim=0.938)",
+        "טרא (TRa, sim=0.938)",
+        "תור (TuR, sim=0.938)",
+        "טור (TuR, sim=0.938)",
+        "תרע (TRa, sim=0.938)"
+      ],
+      "rankAfter": 1,
+      "rank1": true
+    },
+    {
+      "query": "berelshit",
+      "target": "בראשית",
+      "note": "typo of bereshit",
+      "qkeys": [
+        "BRL$T"
+      ],
+      "qRefined": "BaRaL$iT",
+      "candidateCount": 0,
+      "top10Before": [],
+      "top10After": [],
+      "rankAfter": null,
+      "rank1": false
+    },
+    {
+      "query": "adam",
+      "target": "אדם",
+      "note": "",
+      "qkeys": [
+        "DM"
+      ],
+      "qRefined": "aDaM",
+      "candidateCount": 43,
+      "top10Before": [
+        "אדם",
+        "דומה",
+        "האדמה",
+        "האדם",
+        "אדמה",
+        "יודעים",
+        "דמי",
+        "דמו",
+        "דם",
+        "עדים"
+      ],
+      "top10After": [
+        "אדם (aDM, sim=0.938)",
+        "האדם (aDM, sim=0.938)",
+        "הדם (aDM, sim=0.938)",
+        "אודיעם (auDiaM, sim=0.917)",
+        "הודיעם (auDiaM, sim=0.917)",
+        "האדמה (aDMa, sim=0.875)",
+        "אדמה (aDMa, sim=0.875)",
+        "דם (DM, sim=0.875)",
+        "עדים (aDiM, sim=0.875)",
+        "אדום (aDuM, sim=0.875)"
+      ],
+      "rankAfter": 1,
+      "rank1": true
+    },
+    {
+      "query": "amar",
+      "target": "אמר",
+      "note": "",
+      "qkeys": [
+        "MR"
+      ],
+      "qRefined": "aMaR",
+      "candidateCount": 99,
+      "top10Before": [
+        "אמר",
+        "יאמרו",
+        "אומר",
+        "מארה",
+        "המאור",
+        "עמר",
+        "יאמר",
+        "האמורה",
+        "אומרה",
+        "אמור"
+      ],
+      "top10After": [
+        "הממהר (aMaR, sim=1.000)",
+        "המאור (aMauR, sim=0.950)",
+        "המערה (aMaRa, sim=0.950)",
+        "המארע (aMaRa, sim=0.950)",
+        "המעורר (aMauR, sim=0.950)",
+        "המארה (aMaRa, sim=0.950)",
+        "אמר (aMR, sim=0.938)",
+        "עמר (aMR, sim=0.938)",
+        "מהר (MaR, sim=0.938)",
+        "האמר (aMR, sim=0.938)"
+      ],
+      "rankAfter": 7,
+      "rank1": false
+    }
+  ],
+  "exp4": [
+    {
+      "combo": "baseline (0.25/0.75)",
+      "costs": {
+        "name": "baseline (0.25/0.75)",
+        "vowelIndel": 0.25,
+        "vowelContradiction": 0.75,
+        "consonantCost": 1
+      },
+      "rank1Count": 2,
+      "rows": [
+        {
+          "query": "emet",
+          "rank": 11
+        },
+        {
+          "query": "met",
+          "rank": 17
+        },
+        {
+          "query": "shabbos",
+          "rank": 18
+        },
+        {
+          "query": "olam",
+          "rank": 8
+        },
+        {
+          "query": "lecha",
+          "rank": 7
+        },
+        {
+          "query": "elohecha",
+          "rank": 18
+        },
+        {
+          "query": "torah",
+          "rank": 1
+        },
+        {
+          "query": "berelshit",
+          "rank": null
+        },
+        {
+          "query": "adam",
+          "rank": 1
+        },
+        {
+          "query": "amar",
+          "rank": 7
+        }
+      ]
+    },
+    {
+      "combo": "indel=0/contra=0.5",
+      "costs": {
+        "name": "indel=0/contra=0.5",
+        "vowelIndel": 0,
+        "vowelContradiction": 0.5,
+        "consonantCost": 1
+      },
+      "rank1Count": 3,
+      "rows": [
+        {
+          "query": "emet",
+          "rank": 23
+        },
+        {
+          "query": "met",
+          "rank": 11
+        },
+        {
+          "query": "shabbos",
+          "rank": 25
+        },
+        {
+          "query": "olam",
+          "rank": 10
+        },
+        {
+          "query": "lecha",
+          "rank": 1
+        },
+        {
+          "query": "elohecha",
+          "rank": 27
+        },
+        {
+          "query": "torah",
+          "rank": 5
+        },
+        {
+          "query": "berelshit",
+          "rank": null
+        },
+        {
+          "query": "adam",
+          "rank": 1
+        },
+        {
+          "query": "amar",
+          "rank": 1
+        }
+      ]
+    },
+    {
+      "combo": "indel=0/contra=1.0",
+      "costs": {
+        "name": "indel=0/contra=1.0",
+        "vowelIndel": 0,
+        "vowelContradiction": 1,
+        "consonantCost": 1
+      },
+      "rank1Count": 3,
+      "rows": [
+        {
+          "query": "emet",
+          "rank": 23
+        },
+        {
+          "query": "met",
+          "rank": 11
+        },
+        {
+          "query": "shabbos",
+          "rank": 25
+        },
+        {
+          "query": "olam",
+          "rank": 10
+        },
+        {
+          "query": "lecha",
+          "rank": 1
+        },
+        {
+          "query": "elohecha",
+          "rank": 27
+        },
+        {
+          "query": "torah",
+          "rank": 5
+        },
+        {
+          "query": "berelshit",
+          "rank": null
+        },
+        {
+          "query": "adam",
+          "rank": 1
+        },
+        {
+          "query": "amar",
+          "rank": 1
+        }
+      ]
+    },
+    {
+      "combo": "indel=0.5/contra=0.5",
+      "costs": {
+        "name": "indel=0.5/contra=0.5",
+        "vowelIndel": 0.5,
+        "vowelContradiction": 0.5,
+        "consonantCost": 1
+      },
+      "rank1Count": 2,
+      "rows": [
+        {
+          "query": "emet",
+          "rank": 14
+        },
+        {
+          "query": "met",
+          "rank": 18
+        },
+        {
+          "query": "shabbos",
+          "rank": 8
+        },
+        {
+          "query": "olam",
+          "rank": 18
+        },
+        {
+          "query": "lecha",
+          "rank": 14
+        },
+        {
+          "query": "elohecha",
+          "rank": 25
+        },
+        {
+          "query": "torah",
+          "rank": 1
+        },
+        {
+          "query": "berelshit",
+          "rank": null
+        },
+        {
+          "query": "adam",
+          "rank": 1
+        },
+        {
+          "query": "amar",
+          "rank": 7
+        }
+      ]
+    },
+    {
+      "combo": "indel=0.5/contra=1.0",
+      "costs": {
+        "name": "indel=0.5/contra=1.0",
+        "vowelIndel": 0.5,
+        "vowelContradiction": 1,
+        "consonantCost": 1
+      },
+      "rank1Count": 2,
+      "rows": [
+        {
+          "query": "emet",
+          "rank": 11
+        },
+        {
+          "query": "met",
+          "rank": 17
+        },
+        {
+          "query": "shabbos",
+          "rank": 6
+        },
+        {
+          "query": "olam",
+          "rank": 8
+        },
+        {
+          "query": "lecha",
+          "rank": 8
+        },
+        {
+          "query": "elohecha",
+          "rank": 18
+        },
+        {
+          "query": "torah",
+          "rank": 1
+        },
+        {
+          "query": "berelshit",
+          "rank": null
+        },
+        {
+          "query": "adam",
+          "rank": 1
+        },
+        {
+          "query": "amar",
+          "rank": 7
+        }
+      ]
+    }
+  ]
+}
