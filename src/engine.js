@@ -146,10 +146,23 @@ export class ChipusIndex {
     const keys = foldToken(token);
     const qRefined = foldTokenRefined(token);
     const hits = new Map();
+    // bestRefinedSim(qRefined, p.refined) is pure and, for a fixed query
+    // token, depends only on p.refined — but the same refined-variant set
+    // recurs across thousands of postings for a common word (many docs
+    // share the identical folded form). Memoize by its content so the O(n·m)
+    // DP in refinedDistance runs once per distinct refined key, not once per
+    // posting. Scoped to this _matchToken call so it never leaks across
+    // query tokens (qRefined differs) or searches.
+    const simCache = new Map(); // refined-key (joined) -> similarity
     const record = (postings, tier, key) => {
       if (!postings) return;
       for (const p of postings) {
-        const sim = bestRefinedSim(qRefined, p.refined);
+        const refinedCacheKey = p.refined.join("␟");
+        let sim = simCache.get(refinedCacheKey);
+        if (sim === undefined) {
+          sim = bestRefinedSim(qRefined, p.refined);
+          simCache.set(refinedCacheKey, sim);
+        }
         const prev = hits.get(p.doc);
         if (!prev || tier > prev.tier) {
           hits.set(p.doc, { tier, field: p.field, wordIndex: p.word, key, refinedSim: sim, positions: [[p.field, p.word]] });
