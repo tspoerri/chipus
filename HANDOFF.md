@@ -1,20 +1,20 @@
-# HANDOFF — chipus (updated 2026-07-18)
+# HANDOFF — chipus (updated 2026-07-18, evening)
 
-**Next action:** Create the GitHub repo and push (`gh repo create chipus --public --source . --push`), then decide on npm publish.
+**Next action:** Implement v2 per DESIGN-v2.md — `foldRefined()` in fold.js (guttural split: א/ע→ʔ, non-final ה→h, final ה→a, vowel classes a/i/u, carry s/z query expansion into refined keys), prefix-stripped index variants, and refined-similarity re-ranking in engine.js with costs 0.25/0.75.
 
 ## Current state
-- v0.1 complete and committed on `main` (2 commits): fold.js (phonetic key folding, Hebrew/Latin/Yiddish), engine.js (ChipusIndex: exact/prefix/fuzzy tiers, adjacency + coverage bonuses), gematria.js, 16 tests green (`npm test`), README design doc, MIT license, demo/index.html.
-- No remote yet — never pushed anywhere.
-- Proof-of-concept integration shipped: rashi-search v2 vendors this library (see ../rashi-search/HANDOFF.md). Benchmark on its 7,816-doc corpus: ~1 s index build, 8,499 unique keys, 2–25 ms/query.
+- Pushed to GitHub (public): https://github.com/tspoerri/chipus — v0.1, 16 tests green, demo, MIT. GitHub-only by decision (no npm).
+- DESIGN-v2.md committed (c53c759): vowel-aware refined ranking, fully specced from two corpus experiment rounds (artifacts + prototype refined.js in `experiments/2026-07-18-vowel-refined/`). Evidence: rank-1 hits 4/14 → 11/14 on the rashi corpus, collision-group separation 65.4% → 68.9%, zero regressions.
+- Key traps recorded in the design doc: vowel-omission cost must be 0.25 not 0 (0 collapses ranking into giant ties); measure with competition ranks; prefix variants are worthless without the guttural split but rescue ה-prefix queries with it.
+- rashi-search vendors v0.1 (`../rashi-search/lib/chipus/`) — re-vendor after v2 lands.
 - fold.js contains literal control chars \x01/\x02 as ambiguity placeholders — intentional, do not "fix".
-- Known accepted collisions (documented in README): short keys (LK: לך/אלהיך), shabbos↔שבעת (ע drops).
 
 ## Open questions
-- Publish to npm, or GitHub-only + vendoring?
-- Alias fast-path helper (`Map<key,name>` for closed vocabularies) — worth adding to the library itself vs. leaving as a README tip?
+- Should prefix-stripping also feed coarse recall (query-side expansion so "veamar" can surface אמר)? Needs its own experiment — DESIGN-v2.md §Open questions.
+- REFINE_WEIGHT calibration: refined similarity should reorder within a tier, never overcome a full tier gap.
 
 ## Resume command
 ```sh
 cd ~/Documents/Projects/chipus && claude
-# say: "Read HANDOFF.md and continue"
+# say: "Read HANDOFF.md and DESIGN-v2.md, implement v2"
 ```
