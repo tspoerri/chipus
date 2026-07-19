@@ -116,6 +116,22 @@ tier-crossing variant in the same grid as D1b). Cheap — same harness.
 - Delegation: steps 1–2 are Sonnet-able against this doc; judgment on the
   grid results stays with Opus/Fable.
 
-Priority: **D2 > D1 > D3 > D5 > D4.** D2 alone plausibly flips most of the 5
-misses (the true answer is a fully-covered short dibbur in every one); D1
-covers the queries where one term is distinctive; the rest are refinements.
+Priority (Tamar, 2026-07-19): **D2 > D5 > D3 first** — the corpus-generic
+levers, since chipus should work for any corpus. D1 (rarity) and D4 (prefix
+expansion) deferred, revisit only if D2/D5/D3 leave misses on the table.
+
+## Synthetic eval (2026-07-19)
+
+Instead of hand-transliterated calibration rounds, eval queries are generated
+by the hebrew-toolkit transliteration engine (vendored into
+`rashi-search/scripts/translit-vendor/`): stratified sample of 60 dibburim
+(by dh word count × popularity), vocalized-dh recovered by aligning dh tokens
+to vt/t, rendered in Sefardi + Ashkenazi styles × clean/sloppy variants →
+195 queries in `rashi-search/eval/queries.json` (+ a partial-dibbur regression
+set). Harness: `rashi-search/scripts/eval.mjs` (competition ranks over the
+real page pipeline). Real human queries can be appended with style:"human".
+
+Baseline (chipus v2 + current app blend): overall top-1 74.4%, top-3 87.2%,
+MRR 0.824 — but the 1–2-word dibbur bucket is 29.1% top-1 / 54.5% top-3 vs
+92%+ for 3+ words. The whole problem lives in short queries, as calibration
+round 1 said.
