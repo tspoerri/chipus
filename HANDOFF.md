@@ -1,6 +1,6 @@
 # HANDOFF — chipus (updated 2026-07-18, night)
 
-**Next action:** v2 is implemented and pushed. Next up: re-vendor into rashi-search (`../rashi-search/lib/chipus/`) and decide on open question 1 below (query-side prefix expansion for coarse recall — explicitly declined for this pass per Tamar's instruction: "prefix-stripping should not widen recall").
+**Next action:** v2 is vendored into rashi-search (as a submodule) and latency-fixed. Next up: **DESIGN-v3.md** (drafted 2026-07-19, proposed/not-validated) — evidence-weighted ranking: field-coverage bonus (D2), term-rarity/IDF (D1), popBoost tie-break (D3, app-side), query-side prefix expansion (D4, absorbs old open question 1), script-conditional refined weight (D5). Prereq lives in rashi-search: persist the calibration eval set. See rashi-search/HANDOFF.md.
 
 ## Current state
 - v2 (vowel-aware refined ranking) implemented, tested, committed, pushed to https://github.com/tspoerri/chipus.
