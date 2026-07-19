@@ -1,20 +1,23 @@
-# HANDOFF — chipus (updated 2026-07-18, evening)
+# HANDOFF — chipus (updated 2026-07-18, night)
 
-**Next action:** Implement v2 per DESIGN-v2.md — `foldRefined()` in fold.js (guttural split: א/ע→ʔ, non-final ה→h, final ה→a, vowel classes a/i/u, carry s/z query expansion into refined keys), prefix-stripped index variants, and refined-similarity re-ranking in engine.js with costs 0.25/0.75.
+**Next action:** v2 is implemented and pushed. Next up: re-vendor into rashi-search (`../rashi-search/lib/chipus/`) and decide on open question 1 below (query-side prefix expansion for coarse recall — explicitly declined for this pass per Tamar's instruction: "prefix-stripping should not widen recall").
 
 ## Current state
-- Pushed to GitHub (public): https://github.com/tspoerri/chipus — v0.1, 16 tests green, demo, MIT. GitHub-only by decision (no npm).
-- DESIGN-v2.md committed (c53c759): vowel-aware refined ranking, fully specced from two corpus experiment rounds (artifacts + prototype refined.js in `experiments/2026-07-18-vowel-refined/`). Evidence: rank-1 hits 4/14 → 11/14 on the rashi corpus, collision-group separation 65.4% → 68.9%, zero regressions.
-- Key traps recorded in the design doc: vowel-omission cost must be 0.25 not 0 (0 collapses ranking into giant ties); measure with competition ranks; prefix variants are worthless without the guttural split but rescue ה-prefix queries with it.
-- rashi-search vendors v0.1 (`../rashi-search/lib/chipus/`) — re-vendor after v2 lands.
-- fold.js contains literal control chars \x01/\x02 as ambiguity placeholders — intentional, do not "fix".
+- v2 (vowel-aware refined ranking) implemented, tested, committed, pushed to https://github.com/tspoerri/chipus.
+  - `src/fold.js`: `foldHebrewRefined`, `foldLatinRefined`, `foldTokenRefined`, `hebrewPrefixVariants` — guttural split (א/ע→ʔ, non-final ה→h, final ה→a), vowel classes a/i/u, s/z query-ambiguity carried into refined keys, prefix-stripped variants for Hebrew tokens.
+  - `src/engine.js`: postings now store `{doc, field, word, refined}` (refined = array of refined-key variants for that occurrence, not a flat int array). `refinedDistance`/`refinedSimilarity` (asymmetric alignment, costs 1.0/0.25/0.75 exactly per DESIGN-v2.md). `REFINE_WEIGHT = 10`, added on top of `tier * fieldWeight` — stays under the smallest tier gap (15, PREFIX↔FUZZY1) so vowel evidence reorders within a tier only, never crosses one.
+  - 10 new tests in `test/refined.test.js` (26 total, all green): guttural-split worked example matches DESIGN-v2.md exactly (אמת→ʔMT, האמת→hʔMT, המת→hMT, מעט→MʔT), Latin refined folding + s/z carry-through, prefix variants, alignment-cost ordering, and an engine-level test confirming re-ranking stays within a tier.
+  - Verified against the corpus experiment script (`experiments/2026-07-18-vowel-refined/exp5_iter2.mjs`) — the refined keys my implementation produces match the experiment's own "MT-group sample" output exactly.
+- Deliberately did NOT implement query-side prefix expansion for coarse recall (open question 1) — Tamar's instruction this session was explicit: prefix-stripping must only widen refined-key ranking evidence, never the coarse recall candidate set. "veamar"→אמר still only works via v1's existing fuzzy-edit-distance tolerance (BMR~MR), not via any new prefix logic.
+- rashi-search vendors v0.1 (`../rashi-search/lib/chipus/`) — still needs re-vendoring to pick up v2.
+- fold.js contains literal control chars \x01/\x02 (`S_AMBIG`/`Z_AMBIG`) as ambiguity placeholders — intentional, do not "fix"; same placeholders reused in `foldLatinRefined`.
 
-## Open questions
-- Should prefix-stripping also feed coarse recall (query-side expansion so "veamar" can surface אמר)? Needs its own experiment — DESIGN-v2.md §Open questions.
-- REFINE_WEIGHT calibration: refined similarity should reorder within a tier, never overcome a full tier gap.
+## Open questions (from DESIGN-v2.md, still open)
+- Query-side prefix expansion for coarse recall: declined for now (see above) — would need its own recall-cost-vs-win experiment if revisited.
+- Refined re-ranking × fuzzy tier interaction: expected fine (typo'd queries get uniformly low refined similarity, so tier order is preserved) but not separately verified against the corpus.
 
 ## Resume command
 ```sh
 cd ~/Documents/Projects/chipus && claude
-# say: "Read HANDOFF.md and DESIGN-v2.md, implement v2"
+# say: "Re-vendor chipus v2 into rashi-search"
 ```

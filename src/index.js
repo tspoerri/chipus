@@ -5,11 +5,20 @@ export {
   foldToken,
   foldHebrew,
   foldLatin,
+  foldTokenRefined,
+  foldHebrewRefined,
+  foldLatinRefined,
+  hebrewPrefixVariants,
   tokenize,
   stripNikud,
   isHebrewText,
 } from "./fold.js";
 
-export { ChipusIndex, boundedEditDistance } from "./engine.js";
+export {
+  ChipusIndex,
+  boundedEditDistance,
+  refinedDistance,
+  refinedSimilarity,
+} from "./engine.js";
 
 export { gematriaToNumber, isValidGematriaOrder } from "./gematria.js";
