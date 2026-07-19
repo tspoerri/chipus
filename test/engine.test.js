@@ -65,3 +65,69 @@ test("match metadata names field and word position", () => {
   assert.equal(res.doc.id, "bereshit");
   assert.equal(res.matches[0].field, "body");
 });
+
+// --- v3 opts (DESIGN-v3.md D2/D5) ------------------------------------------
+
+test("v3 opts default off: scores are bit-identical to plain {}", () => {
+  const build = (opts) => {
+    const idx = new ChipusIndex({
+      fields: [
+        { name: "dh", weight: 3 },
+        { name: "body", weight: 1 },
+      ],
+      ...opts,
+    });
+    idx.add([
+      { id: "bereshit", dh: "בְּרֵאשִׁית", body: "אין המקרא הזה אומר אלא דרשני" },
+      { id: "vayomer", dh: "וַיֹּאמֶר", body: "ויאמר ה' אל אברם" },
+    ]);
+    return idx;
+  };
+  const plain = build({});
+  const explicit = build({ coverageWeight: 0, refineWeightLatin: null });
+  for (const q of ["bereshit", "vayomer", "el אברם"]) {
+    assert.deepEqual(plain.search(q), explicit.search(q));
+  }
+});
+
+test("coverageWeight rewards a fully-consumed short field over a scattered long one", () => {
+  // Two single-field docs at equal weight, equal tier (both EXACT on all
+  // query tokens): doc A's field IS the query; doc B's field merely
+  // contains the same words plus a lot more text.
+  const idx = new ChipusIndex({ coverageWeight: 20 });
+  idx.add([
+    { id: "short", text: "אור גדול" },
+    { id: "long", text: "אור גדול ואור קטן וגם הרבה מילים אחרות כאן כדי להאריך את השדה מאוד מאוד" },
+  ]);
+  const res = idx.search("אור גדול");
+  assert.equal(res[0].doc.id, "short");
+  // Without the bonus the two docs tie (same tokensMatched, same tier, same
+  // field weight, no adjacency difference) — confirm the bonus is what
+  // decides it.
+  const idxOff = new ChipusIndex({});
+  idxOff.add([
+    { id: "short", text: "אור גדול" },
+    { id: "long", text: "אור גדול ואור קטן וגם הרבה מילים אחרות כאן כדי להאריך את השדה מאוד מאוד" },
+  ]);
+  const resOff = idxOff.search("אור גדול");
+  assert.equal(resOff[0].score, resOff[1].score);
+});
+
+test("refineWeightLatin applies only to Latin query tokens", () => {
+  const idxHi = new ChipusIndex({ refineWeightLatin: 40 });
+  const idxLo = new ChipusIndex({}); // REFINE_WEIGHT = 10
+  for (const idx of [idxHi, idxLo]) {
+    idx.add({ id: "vayomer", text: "וַיֹּאמֶר" });
+  }
+  // Latin query token: refineWeightLatin (40) should raise the score vs the
+  // default REFINE_WEIGHT (10), same tier/matches otherwise.
+  const hiLatin = idxHi.search("vayomer")[0].score;
+  const loLatin = idxLo.search("vayomer")[0].score;
+  assert.ok(hiLatin > loLatin, "Latin token score should rise with refineWeightLatin");
+
+  // Hebrew query token: no Latin letters, so refineWeightLatin must not apply
+  // — scores should match the default-weight engine exactly.
+  const hiHeb = idxHi.search("ויאמר")[0].score;
+  const loHeb = idxLo.search("ויאמר")[0].score;
+  assert.equal(hiHeb, loHeb, "Hebrew token score should be unaffected by refineWeightLatin");
+});

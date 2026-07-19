@@ -50,16 +50,37 @@ export class ChipusIndex {
    * @param {{name: string, weight?: number}[]} [opts.fields]
    *   Which properties of each doc to index, with relative weights.
    *   Defaults to a single field `text` at weight 1.
+   * @param {number} [opts.coverageWeight=0]
+   *   Field-coverage bonus weight (see DESIGN-v3.md D2). 0 = off, exact v2
+   *   behavior. When > 0, per doc: coverage_f = (distinct matched word
+   *   positions in field f) / fieldTokens(doc, f); score +=
+   *   coverageWeight * max_f(coverage_f * fieldWeight_f / maxFieldWeight).
+   *   Rewards a doc whose field is fully (or mostly) consumed by the query
+   *   over one that merely contains the same words inside a longer field —
+   *   the engine-generic analog of an app-side "exact dibbur" bonus.
+   * @param {number|null} [opts.refineWeightLatin=null]
+   *   REFINE_WEIGHT override for query tokens containing Latin letters (see
+   *   DESIGN-v3.md D5). null = off, uses REFINE_WEIGHT for every token.
+   *   Latin-script input carries deliberate vowel choices (typing "ei" is a
+   *   choice; an unvocalized Hebrew query simply has none), so vowel-
+   *   alignment evidence is worth more for those tokens. Validated at 40 on
+   *   the rashi-search synthetic eval.
    */
   constructor(opts = {}) {
     this.fields = (opts.fields || [{ name: "text", weight: 1 }]).map((f) => ({
       name: f.name,
       weight: f.weight ?? 1,
     }));
+    this.coverageWeight = opts.coverageWeight || 0;
+    this.refineWeightLatin = opts.refineWeightLatin ?? null;
     this.docs = [];
     this.postings = new Map(); // key -> flat int array [docIdx, fieldIdx, wordIdx, ...]
     this._vocab = null;        // sorted key array, built lazily
     this._byLength = null;     // Map<keyLength, key[]> for fuzzy scans
+    // fieldTokenCounts[docIdx][fieldIdx] = token count, used to normalize
+    // the D2 coverage bonus. Always computed at add() time (cheap, O(1) per
+    // doc/field) regardless of coverageWeight — only scored when > 0.
+    this.fieldTokenCounts = [];
   }
 
   /** Add one doc or an array of docs. Fields are read by name; missing/empty fields are fine. */
@@ -68,10 +89,13 @@ export class ChipusIndex {
     for (const doc of docs) {
       const docIdx = this.docs.length;
       this.docs.push(doc);
+      const counts = new Array(this.fields.length).fill(0);
+      this.fieldTokenCounts.push(counts);
       for (let f = 0; f < this.fields.length; f++) {
         const text = doc[this.fields[f].name];
         if (!text) continue;
         const tokens = tokenize(String(text));
+        counts[f] = tokens.length;
         for (let w = 0; w < tokens.length; w++) {
           const refined = foldTokenRefined(tokens[w]);
           for (const key of foldToken(tokens[w])) {
@@ -102,11 +126,14 @@ export class ChipusIndex {
     // Combine: doc -> score
     const docScores = new Map(); // docIdx -> {score, tokensMatched, matches, byToken}
     perToken.forEach((tokenHits, tIdx) => {
+      const refineWeight = (this.refineWeightLatin != null && /[a-z]/i.test(qtokens[tIdx]))
+        ? this.refineWeightLatin
+        : REFINE_WEIGHT;
       for (const [docIdx, hit] of tokenHits) {
         let e = docScores.get(docIdx);
         if (!e) docScores.set(docIdx, (e = { score: 0, tokensMatched: 0, matches: [], byToken: new Map() }));
         e.tokensMatched++;
-        e.score += hit.tier * this.fields[hit.field].weight + REFINE_WEIGHT * hit.refinedSim;
+        e.score += hit.tier * this.fields[hit.field].weight + refineWeight * hit.refinedSim;
         e.matches.push({ token: qtokens[tIdx], key: hit.key, field: this.fields[hit.field].name, wordIndex: hit.wordIndex, tier: hit.tier, refinedSim: hit.refinedSim });
         e.byToken.set(tIdx, hit.positions);
       }
@@ -129,6 +156,35 @@ export class ChipusIndex {
       if (e.tokensMatched === qtokens.length && qtokens.length > 1) {
         e.score *= ALL_TOKENS_FACTOR;
       }
+
+      // D2 field-coverage bonus (see DESIGN-v3.md). Off unless coverageWeight
+      // is set. Approximation: positions come from byToken, which records
+      // only each token's *best-tier* positions (capped at MAX_POSITIONS in
+      // _matchToken) — so coverage is a best-tier approximation, not exact
+      // over every tier a token matched at.
+      if (this.coverageWeight > 0) {
+        const maxFieldWeight = this._maxFieldWeight();
+        const fieldWordSets = new Map(); // fieldIdx -> Set<wordIndex>
+        for (const positions of e.byToken.values()) {
+          for (const [f, w] of positions) {
+            let ws = fieldWordSets.get(f);
+            if (!ws) fieldWordSets.set(f, (ws = new Set()));
+            ws.add(w);
+          }
+        }
+        let maxCoverBonus = 0;
+        const counts = this.fieldTokenCounts[docIdx] || [];
+        for (const [f, wordSet] of fieldWordSets) {
+          const total = counts[f] || 0;
+          if (total === 0) continue;
+          const coverage = wordSet.size / total;
+          const wNorm = this.fields[f].weight / maxFieldWeight;
+          const bonus = coverage * wNorm;
+          if (bonus > maxCoverBonus) maxCoverBonus = bonus;
+        }
+        e.score += this.coverageWeight * maxCoverBonus;
+      }
+
       results.push({ doc: this.docs[docIdx], score: e.score, matches: e.matches });
     }
     results.sort((a, b) => b.score - a.score);
@@ -206,6 +262,14 @@ export class ChipusIndex {
       }
     }
     return hits;
+  }
+
+  // Cached max field weight, used to normalize the D2 coverage bonus.
+  _maxFieldWeight() {
+    if (this.__maxFieldWeight === undefined) {
+      this.__maxFieldWeight = Math.max(...this.fields.map((f) => f.weight));
+    }
+    return this.__maxFieldWeight;
   }
 
   _ensureVocab() {
