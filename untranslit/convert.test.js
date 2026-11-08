@@ -85,5 +85,9 @@ test('vowel rules: mid-word vowel pair, first letter, -ia/-ua endings', () => {
   assert.equal(convertText('rakia'), 'רקיע');       // unknown -ia defaults to יע
   assert.equal(convertText('gedalia'), 'גדליה');   // known -ia words ending in יה still win
   assert.equal(convertText('chanukia'), 'חנוכיה');
+  assert.equal(convertText('kushiah'), 'קושיה');   // -iah must keep the י (not קשה)
+  assert.equal(convertText('ovadiah'), 'עובדיה');  // a fix for ovadia covers ovadiah
+  assert.equal(convertText('beis'), 'בית');        // vowel pair as a diphthong
+  assert.equal(convertText('shmuel'), 'שמואל');    // vowel pair as a glottal stop
   assert.equal(convertText('lehodia'), 'להודיע');
 });

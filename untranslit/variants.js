@@ -31,7 +31,7 @@ export function hebGuesses(w, basic = false) {
     }
     // two vowels in a row mid-word often hide an ayin or aleph (meidim, shmuel); 'j' marks the
     // spot because it is the only letter the guesser spells ג׳
-    if (!basic && !b.includes('j') && /[^aeiou][aeiou]{2}[^aeiou]/.test(b)) {
+    if (!basic && !b.includes('j') && /[^aeiou][aeiou]{2}[^aeiouh]/.test(b.replace(/h$/, ''))) {
       const g2 = guessHebrew(b.replace(/([^aeiou][aeiou])([aeiou][^aeiou])/, '$1j$2'));
       for (const L of ['ע', 'א']) put(g2.replace('ג׳', L), p + 0.02);
     }

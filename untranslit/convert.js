@@ -48,7 +48,7 @@ const SAME_START = new Set(['כק', 'קכ', 'תט', 'טת', 'אע', 'עא', 'ס�
 const startsFit = (guesses, h) => guesses.some(([g]) => g[0] === h[0] || SAME_START.has(g[0] + h[0]));
 // -ia / -ua (yashmia, shavua): modern spelling always writes the vowel before the final ayin
 // (many -ia words end in יה, יא or יאה instead: kushia, Luria, kria, so those are allowed too)
-const endsFit = (w, h) => (/[^aeiouy]ia$/.test(w) ? /י(ע|ה|א|עה|אה)$/.test(h) : /[^aeiouy]ua$/.test(w) ? /ו(ע|ה|א|עה|אה)$/.test(h) : true);
+const endsFit = (w, h) => (/[^aeiouy]iah$/.test(w) ? /י(ה|אה|עה)$/.test(h) : /[^aeiouy]ia$/.test(w) ? /י(ע|ה|א|עה|אה)$/.test(h) : /[^aeiouy]ua$/.test(w) ? /ו(ע|ה|א|עה|אה)$/.test(h) : true);
 
 function lexiconMatch(w) {
   const { byKey } = lex();
@@ -71,7 +71,10 @@ function lexiconMatch(w) {
 // Look up a bare lowercase a-z word (no prefix handling): {hebrew, source, score} or null
 function direct(w) {
   const { exact, soft = {} } = lex();
-  if (exact[w]) return { hebrew: exact[w], source: 'exact', score: 2 };
+  // a final ה is typed with or without h (tefilla/tefillah), so a fix for one spelling covers both
+  const alt = /[aeiou]h$/.test(w) ? w.slice(0, -1) : /[aeiou]$/.test(w) ? w + 'h' : null;
+  for (const k of [w, alt]) if (k && exact[k] && (k === w || exact[k].endsWith('ה')))
+    return { hebrew: exact[k], source: 'exact', score: 2 };
   const m = lexiconMatch(w);
   const s = soft[w] && endsFit(w, soft[w]) ? soft[w] : undefined; // mined rows obey the -ia/-ua rule too
   if (s) {
