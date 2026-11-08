@@ -47,8 +47,8 @@ const PRE_RE = /^(she|ha|ve|be|le|me|ke)(?=[a-z]{3,})/;
 const SAME_START = new Set(['כק', 'קכ', 'תט', 'טת', 'אע', 'עא', 'סש', 'שס', 'בו', 'וב', 'כח', 'חכ', 'סצ', 'צס']);
 const startsFit = (guesses, h) => guesses.some(([g]) => g[0] === h[0] || SAME_START.has(g[0] + h[0]));
 // -ia / -ua (yashmia, shavua): modern spelling always writes the vowel before the final ayin
-// (names like Nechemia, Gedalia end in יה instead, so that is allowed too)
-const endsFit = (w, h) => (/[^aeiouy]ia$/.test(w) ? /י(ע|ה|א|עה)$/.test(h) : /[^aeiouy]ua$/.test(w) ? /ו(ע|ה|א|עה)$/.test(h) : true);
+// (many -ia words end in יה, יא or יאה instead: kushia, Luria, kria, so those are allowed too)
+const endsFit = (w, h) => (/[^aeiouy]ia$/.test(w) ? /י(ע|ה|א|עה|אה)$/.test(h) : /[^aeiouy]ua$/.test(w) ? /ו(ע|ה|א|עה|אה)$/.test(h) : true);
 
 function lexiconMatch(w) {
   const { byKey } = lex();
