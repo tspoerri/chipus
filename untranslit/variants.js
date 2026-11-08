@@ -15,7 +15,7 @@ export function hebGuesses(w, basic = false) {
   const lat = new Map(latinVariants(w).map((b, i) => [b, i ? 0.03 : 0]));
   if (!basic) {
     for (const [b, p] of [...lat]) {
-      if (/v(?=.)/.test(b) && !/v$/.test(b)) lat.set(b.replace(/v(?=.)/g, 'w'), p + 0.06);
+      if (/v(?=.)/.test(b) && !/v$/.test(b)) lat.set(b.replace(/v(?=.)/g, 'w'), p + (/^v/.test(b) ? 0.02 : 0.06));
       if (/.ch/.test(b)) lat.set(b.replace(/(.)ch/g, '$1k'), p + 0.1);
     }
   } else for (const b of [...lat.keys()].slice(1)) lat.delete(b);
