@@ -76,3 +76,11 @@ test('cli: stdin to stdout, no newline added or removed, any cwd', () => {
   assert.equal(run('ani\n'), 'אני\n');
   assert.equal(run('x  y\n\n'), convertText('x  y\n\n'));
 });
+
+test('vowel rules: mid-word vowel pair, first letter, -ia/-ua endings', () => {
+  assert.equal(convertText('meidim'), 'מעידים');   // e-i hides an ayin
+  assert.equal(convertText('yemallel'), 'ימלל');   // y- must stay yud (not אומלל)
+  assert.equal(convertText('yashmia'), 'ישמיע');   // final -ia -> יע
+  assert.equal(convertText('shavua'), 'שבוע');
+  assert.equal(convertText('gedalia'), 'גדליה');   // names keep -יה
+});

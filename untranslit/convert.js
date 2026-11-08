@@ -43,6 +43,13 @@ export const FREQ_WEIGHT = 0.08;  // log10(ppm) weight in the ranking
 const PREFIX = { she: 'ש', ha: 'ה', ve: 'ו', be: 'ב', le: 'ל', me: 'מ', ke: 'כ' };
 const PRE_RE = /^(she|ha|ve|be|le|me|ke)(?=[a-z]{3,})/;
 
+// First letters that may stand in for each other (k/q, t/tet, aleph/ayin, s/sh, v as bet or vav, ch).
+const SAME_START = new Set(['כק', 'קכ', 'תט', 'טת', 'אע', 'עא', 'סש', 'שס', 'בו', 'וב', 'כח', 'חכ', 'סצ', 'צס']);
+const startsFit = (guesses, h) => guesses.some(([g]) => g[0] === h[0] || SAME_START.has(g[0] + h[0]));
+// -ia / -ua (yashmia, shavua): modern spelling always writes the vowel before the final ayin
+// (names like Nechemia, Gedalia end in יה instead, so that is allowed too)
+const endsFit = (w, h) => (/[^aeiouy]ia$/.test(w) ? /י(ע|ה|א|עה)$/.test(h) : /[^aeiouy]ua$/.test(w) ? /ו(ע|ה|א|עה)$/.test(h) : true);
+
 function lexiconMatch(w) {
   const { byKey } = lex();
   const guesses = hebGuesses(w);
@@ -51,6 +58,7 @@ function lexiconMatch(w) {
   for (const k of new Set(latinVariants(w).flatMap((v) => foldToken(v)))) {
     for (const [h, ppm] of byKey[k] || []) {
       if (seen.has(h)) continue; seen.add(h);
+      if (!startsFit(guesses, h) || !endsFit(w, h)) continue;
       const sim = bestSim(guesses, h, hebSim);
       if (sim < MIN_SIM) continue;
       const score = sim + FREQ_WEIGHT * Math.log10(ppm + 0.1);

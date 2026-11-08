@@ -53,7 +53,11 @@ const INITIAL_V = (v) => (v === 'a' ? 'א' : v === 'o' || v === 'u' ? 'או' : v
 
 function spell(word) {
   if (!word) return '';
-  if (/[ae]h$/.test(word)) word = word.slice(0, -1); // -ah / -eh: the h is just the vowel's carrier
+  const hadH = /[ae]h$/.test(word);
+  if (hadH) word = word.slice(0, -1); // -ah / -eh: the h is just the vowel's carrier
+  // -ia / -ea / -ua after a consonant ends in ayin (yodea, yashmia, shavua); -iah keeps ה
+  const ayinEnd = !hadH && /[^aeiouy][iue]a$/.test(word) && word.length >= 4;
+  if (ayinEnd) word = word.slice(0, -1);
   const units = tokenize(word);
   const out = [];
   let prev = null;
@@ -75,6 +79,7 @@ function spell(word) {
     prev = { v: true }; i = j;
   }
   let s = out.join('');
+  if (ayinEnd) { if (s.endsWith('ה')) s = s.slice(0, -1); s += 'ע'; return s; }
   const last = s[s.length - 1];
   if (FINAL[last]) s = s.slice(0, -1) + FINAL[last];
   return s;

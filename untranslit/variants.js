@@ -25,6 +25,13 @@ export function hebGuesses(w, basic = false) {
     const g = guessHebrew(b);
     put(g, p);
     if (!basic && /[^h]a$/.test(b) && g.endsWith('ה')) put(g.slice(0, -1) + 'א', p + 0.04);
+    if (!basic && /[^aeiouy][iue]a$/.test(b)) put(guessHebrew(b + 'h'), p + 0.03); // -ia as יה (Gedalia)
+    // two vowels in a row mid-word often hide an ayin or aleph (meidim, shmuel); 'j' marks the
+    // spot because it is the only letter the guesser spells ג׳
+    if (!basic && !b.includes('j') && /[^aeiou][aeiou]{2}[^aeiou]/.test(b)) {
+      const g2 = guessHebrew(b.replace(/([^aeiou][aeiou])([aeiou][^aeiou])/, '$1j$2'));
+      for (const L of ['ע', 'א']) put(g2.replace('ג׳', L), p + 0.02);
+    }
   }
   return [...out];
 }
