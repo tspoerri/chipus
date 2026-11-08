@@ -104,5 +104,9 @@ if (fs.existsSync(ov)) {
   }
 }
 fs.writeFileSync(path.join(here, 'lexicon.json'), JSON.stringify({ exact, soft, byKey }));
+const rows = [];
+for (const [name, obj] of Object.entries({ exact, soft, byKey }))
+  for (const [k, v] of Object.entries(obj)) rows.push(`${name}\x1f${k}\x1f${JSON.stringify(v)}`);
+fs.writeFileSync(path.join(here, 'lexicon.lines'), rows.join('\n') + '\n');
 const size = fs.statSync(path.join(here, 'lexicon.json')).size;
 console.log(JSON.stringify({ exact: Object.keys(exact).length, soft: Object.keys(soft).length, keys: Object.keys(byKey).length, entries, bytes: size, ...stats }));

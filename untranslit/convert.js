@@ -13,7 +13,29 @@ export function loadLexicon(file = new URL('./lexicon.json', import.meta.url)) {
   LEX = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : { exact: {}, byKey: {} };
   return LEX;
 }
-const lex = () => LEX || loadLexicon();
+// Fast path for the Quick Action: lexicon.lines holds one "section\x1fkey\x1fjson" row per entry,
+// so a run looks up only the words it needs instead of parsing the whole 3 MB JSON.
+function loadLines(file = new URL('./lexicon.lines', import.meta.url)) {
+  if (!fs.existsSync(file)) return null;
+  const text = '\n' + fs.readFileSync(file, 'utf8');
+  const section = (name) => {
+    const cache = new Map();
+    return new Proxy({}, {
+      get(_, key) {
+        if (typeof key !== 'string') return undefined;
+        if (cache.has(key)) return cache.get(key);
+        const tag = `\n${name}\x1f${key}\x1f`;
+        const i = text.indexOf(tag);
+        let v;
+        if (i >= 0) { const start = i + tag.length; v = JSON.parse(text.slice(start, text.indexOf('\n', start))); }
+        cache.set(key, v);
+        return v;
+      },
+    });
+  };
+  return { exact: section('exact'), soft: section('soft'), byKey: section('byKey') };
+}
+const lex = () => LEX || (LEX = loadLines()) || loadLexicon();
 
 export const MIN_SIM = 0.78;      // lexicon candidate must be at least this similar to the guess
 export const SOFT_MARGIN = 0.08; // lexicon must beat a soft-exact entry's similarity by this much
