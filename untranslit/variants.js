@@ -23,7 +23,8 @@ export function hebGuesses(w, basic = false) {
   const put = (g, p) => { if (!out.has(g) || out.get(g) > p) out.set(g, p); };
   for (const [b, p] of lat) {
     const g = guessHebrew(b);
-    put(g, p);
+    // a vowel pair the plain guess spells as nothing (michael, yael) is rarely silent in Hebrew
+    put(g, p + (!basic && /[^aeiou](ae|ea|ao|eo|aa)[^aeiouh]/.test(b) ? 0.06 : 0));
     if (!basic && /[^h]a$/.test(b) && g.endsWith('ה')) put(g.slice(0, -1) + 'א', p + 0.04);
     if (!basic && /[^aeiouy][iue]a$/.test(b)) { // -ia: try both יה (kushia) and יע (yashmia)
       put(guessHebrew(b + 'h'), p + 0.03);
