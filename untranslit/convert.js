@@ -40,8 +40,8 @@ const lex = () => LEX || (LEX = loadLines()) || loadLexicon();
 export const MIN_SIM = 0.78;      // lexicon candidate must be at least this similar to the guess
 export const SOFT_MARGIN = 0.08; // lexicon must beat a soft-exact entry's similarity by this much
 export const FREQ_WEIGHT = 0.08;  // log10(ppm) weight in the ranking
-const PREFIX = { she: 'ש', ha: 'ה', ve: 'ו', be: 'ב', le: 'ל', me: 'מ', ke: 'כ' };
-const PRE_RE = /^(she|ha|ve|be|le|me|ke)(?=[a-z]{3,})/;
+const PREFIX = { she: 'ש', ha: 'ה', ve: 'ו', va: 'ו', be: 'ב', le: 'ל', me: 'מ', ke: 'כ' };
+const PRE_RE = /^(she|ha|ve|va|be|le|me|ke)(?=[a-z]{3,})/;
 
 // First letters that may stand in for each other (k/q, t/tet, aleph/ayin, s/sh, v as bet or vav, ch).
 const SAME_START = new Set(['כק', 'קכ', 'תט', 'טת', 'אע', 'עא', 'סש', 'שס', 'בו', 'וב', 'כח', 'חכ', 'סצ', 'צס']);
