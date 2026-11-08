@@ -17,6 +17,7 @@ export function hebGuesses(w, basic = false) {
     for (const [b, p] of [...lat]) {
       if (/v(?=.)/.test(b) && !/v$/.test(b)) lat.set(b.replace(/v(?=.)/g, 'w'), p + 0.06);
       if (/.ch/.test(b)) lat.set(b.replace(/(.)ch/g, '$1k'), p + 0.1);
+      if (/kh/.test(b)) lat.set(b.replace(/kh/g, 'k'), p + 0.02); // academic kh = soft kaf (bekhol)
     }
   } else for (const b of [...lat.keys()].slice(1)) lat.delete(b);
   const out = new Map();
