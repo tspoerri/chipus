@@ -1,4 +1,11 @@
-# HANDOFF — chipus (updated 2026-07-18, night)
+# HANDOFF — chipus
+
+## Hebrew-ify (2026-11-07)
+- Select text anywhere on the Mac, run the "Hebrew-ify" Quick Action, and all Latin words are turned into Hebrew. Spec: SPEC-untransliterate.md. Code: untranslit/.
+- Installed at ~/Library/Services/Hebrew-ify.workflow and tested headlessly. Next action: Tamar sets a shortcut (System Settings > Keyboard > Keyboard Shortcuts > Services > Text > Hebrew-ify).
+- Eval: 177/180 words (tuned on the same set). Known misses: yalla, shul (Yiddish, left alone). Common function words and Orthodox terms are fixed by hand in untranslit/overrides.tsv; add a line there to fix a word, then run `node untranslit/build-lexicon.js`.
+- lexicon.json is git-ignored because it is partly built from life-os/untranslit-mining/terms.tsv (personal corpora). Local commits only; nothing pushed.
+
 
 **Next action:** v2 is vendored into rashi-search (as a submodule) and latency-fixed. Next up: **DESIGN-v3.md** (drafted 2026-07-19, proposed/not-validated) — evidence-weighted ranking: field-coverage bonus (D2), term-rarity/IDF (D1), popBoost tie-break (D3, app-side), query-side prefix expansion (D4, absorbs old open question 1), script-conditional refined weight (D5). Prereq lives in rashi-search: persist the calibration eval set. See rashi-search/HANDOFF.md.
 
