@@ -9,13 +9,13 @@ import { hebSim } from './sim.js';
 import { latinVariants, hebGuesses, bestSim } from './variants.js';
 
 let LEX = null;
-export function loadLexicon(file = new URL('./lexicon.json', import.meta.url)) {
+export function loadLexicon(file = process.env.LEX_DIR ? `${process.env.LEX_DIR}/lexicon.json` : new URL('./lexicon.json', import.meta.url)) {
   LEX = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : { exact: {}, byKey: {} };
   return LEX;
 }
 // Fast path for the Quick Action: lexicon.lines holds one "section\x1fkey\x1fjson" row per entry,
 // so a run looks up only the words it needs instead of parsing the whole 3 MB JSON.
-function loadLines(file = new URL('./lexicon.lines', import.meta.url)) {
+function loadLines(file = process.env.LEX_DIR ? `${process.env.LEX_DIR}/lexicon.lines` : new URL('./lexicon.lines', import.meta.url)) {
   if (!fs.existsSync(file)) return null;
   const text = '\n' + fs.readFileSync(file, 'utf8');
   const section = (name) => {

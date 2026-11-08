@@ -24,6 +24,9 @@ const EXACT_MIN_SIM_TOP = 0.7;  // unflagged top rows: loose check vs guessHebre
 const EXACT_MIN_SIM = 0.85;     // other unflagged rows: strict check
 
 const HEB = /^[א-ת]{2,}$/;
+// holdout.js: HOLDOUT names a file of latin words to leave out of exact/soft/overrides; LEX_DIR redirects output
+const HOLD = new Set(process.env.HOLDOUT ? fs.readFileSync(process.env.HOLDOUT, 'utf8').split('\n').filter(Boolean) : []);
+const OUT = process.env.LEX_DIR || here;
 const bySource = {};
 
 // 1. he_50k
@@ -76,7 +79,7 @@ const lines = fs.readFileSync(TERMS, 'utf8').split('\n').slice(1);
 const norm1 = (h) => h.replace(/[^א-ת״׳]/g, '');
 for (const line of lines) {
   const [latin, count, hebrew, alt, , , flag] = line.split('\t');
-  if (!latin || !/^[a-z]+$/.test(latin)) continue;
+  if (!latin || !/^[a-z]+$/.test(latin) || HOLD.has(latin)) continue;
   const n = +count;
   if (flag && /^hand/.test(flag)) {
     if (hebrew) { exact[latin] = hebrew; stats.trusted++; }
@@ -100,13 +103,13 @@ if (fs.existsSync(ov)) {
   for (const l of fs.readFileSync(ov, 'utf8').split('\n')) {
     if (!l.trim() || l.startsWith('#')) continue;
     const [lat, heb] = l.split('\t');
-    if (lat && heb) { exact[lat.toLowerCase()] = heb.trim(); stats.overrides++; }
+    if (lat && heb && !HOLD.has(lat.toLowerCase())) { exact[lat.toLowerCase()] = heb.trim(); stats.overrides++; }
   }
 }
-fs.writeFileSync(path.join(here, 'lexicon.json'), JSON.stringify({ exact, soft, byKey }));
+fs.writeFileSync(path.join(OUT, 'lexicon.json'), JSON.stringify({ exact, soft, byKey }));
 const rows = [];
 for (const [name, obj] of Object.entries({ exact, soft, byKey }))
   for (const [k, v] of Object.entries(obj)) rows.push(`${name}\x1f${k}\x1f${JSON.stringify(v)}`);
-fs.writeFileSync(path.join(here, 'lexicon.lines'), rows.join('\n') + '\n');
-const size = fs.statSync(path.join(here, 'lexicon.json')).size;
+fs.writeFileSync(path.join(OUT, 'lexicon.lines'), rows.join('\n') + '\n');
+const size = fs.statSync(path.join(OUT, 'lexicon.json')).size;
 console.log(JSON.stringify({ exact: Object.keys(exact).length, soft: Object.keys(soft).length, keys: Object.keys(byKey).length, entries, bytes: size, ...stats }));
