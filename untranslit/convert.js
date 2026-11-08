@@ -73,7 +73,7 @@ function direct(w) {
   const { exact, soft = {} } = lex();
   if (exact[w]) return { hebrew: exact[w], source: 'exact', score: 2 };
   const m = lexiconMatch(w);
-  const s = soft[w];
+  const s = soft[w] && endsFit(w, soft[w]) ? soft[w] : undefined; // mined rows obey the -ia/-ua rule too
   if (s) {
     const ss = bestSim(hebGuesses(w, true), s, hebSim);
     if (!m || m.hebrew === s || m.sim < ss + SOFT_MARGIN) return { hebrew: s, source: 'exact', score: 1.5 + ss };

@@ -82,7 +82,8 @@ test('vowel rules: mid-word vowel pair, first letter, -ia/-ua endings', () => {
   assert.equal(convertText('yemallel'), 'ימלל');   // y- must stay yud (not אומלל)
   assert.equal(convertText('yashmia'), 'ישמיע');   // final -ia -> יע
   assert.equal(convertText('shavua'), 'שבוע');
-  assert.equal(convertText('gedalia'), 'גדליה');   // -ia words often end in יה
+  assert.equal(convertText('rakia'), 'רקיע');       // unknown -ia defaults to יע
+  assert.equal(convertText('gedalia'), 'גדליה');   // known -ia words ending in יה still win
   assert.equal(convertText('chanukia'), 'חנוכיה');
   assert.equal(convertText('lehodia'), 'להודיע');
 });

@@ -55,10 +55,10 @@ function spell(word) {
   if (!word) return '';
   const hadH = /[ae]h$/.test(word);
   if (hadH) word = word.slice(0, -1); // -ah / -eh: the h is just the vowel's carrier
-  // -ea / -ua after a consonant ends in ayin (yodea, shavua). -ia does only in verb-shaped words
-  // (yashmia, magia, lehodia); other -ia words end in יה (kushia, chanukia), as does -iah.
-  const VERBISH = /^(?:y[aeio]|m[aeiou]|l[ae]|t[aei]|n[aei]|h[aeio])[a-z]*[^aeiouy]ia$/;
-  const ayinEnd = !hadH && word.length >= 4 && (/[^aeiouy][ue]a$/.test(word) || VERBISH.test(word));
+  // -ia / -ea / -ua after a consonant ends in ayin when the word is unknown (yashmia, yodea, shavua):
+  // יע is always written -ia, while יה is usually -iya/-yah. Known -ia words ending in יה, יא or
+  // יאה (chanukia, gematria, kria) still win through the lexicon. -iah keeps ה.
+  const ayinEnd = !hadH && word.length >= 4 && /[^aeiouy][iue]a$/.test(word);
   if (ayinEnd) word = word.slice(0, -1);
   const units = tokenize(word);
   const out = [];
