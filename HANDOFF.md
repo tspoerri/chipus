@@ -4,6 +4,7 @@
 - Select text anywhere on the Mac, run the "Hebrew-ify" Quick Action, and all Latin words are turned into Hebrew. Spec: SPEC-untransliterate.md. Code: untranslit/.
 - Installed at ~/Library/Services/Hebrew-ify.workflow. Works in real apps (Tamar confirmed 2026-11-07 via right-click > Services > Hebrew-ify). If it vanishes from Services or Settings, run `/System/Library/CoreServices/pbs -update`. Shortcut: Tamar sets it in System Settings > Keyboard > Keyboard Shortcuts > Services > Text.
 - Eval: 178/180 words (tuned on the same set). Known misses: yalla, shul (Yiddish, left alone). Common function words and Orthodox terms are fixed by hand in untranslit/overrides.tsv; add a line there to fix a word, then run `node untranslit/build-lexicon.js`.
+- Judge rule changes by `sh untranslit/check.sh` (unit tests, tuned eval, held-out own words over 5 seeds, held-out Sefaria words). Keep a rule only if held-out own words do not drop; never hand-fix words seen in the held-out tests. 2026-11-07: own 211/313, Sefaria topics 264/498, books 332/490. Tried and dropped: h as ח (hurts her words), costlier dropped ו/י, vav for word-initial v.
 - lexicon.json is git-ignored because it is partly built from life-os/untranslit-mining/terms.tsv (personal corpora). Local commits only; nothing pushed.
 
 
