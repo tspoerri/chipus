@@ -34,7 +34,9 @@ export function hebGuesses(w, basic = false) {
     // spot because it is the only letter the guesser spells ג׳
     if (!basic && !b.includes('j') && /[^aeiou][aeiou]{2}[^aeiouh]/.test(b.replace(/h$/, ''))) {
       const g2 = guessHebrew(b.replace(/([^aeiou][aeiou])([aeiou][^aeiou])/, '$1j$2'));
-      for (const L of ['ע', 'א']) put(g2.replace('ג׳', L), p + 0.02);
+      // a mid-word aleph rarely carries a patach, so before an 'a' the hidden letter leans ayin
+      const nextA = /[^aeiou]ea[^aeiou]/.test(b);
+      for (const L of ['ע', 'א']) put(g2.replace('ג׳', L), p + (nextA && L === 'א' ? 0.05 : 0.02));
     }
   }
   return [...out];
