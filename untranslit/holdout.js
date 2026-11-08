@@ -19,6 +19,8 @@ const TOP_COUNT = 650, SHARE = 0.25;
 
 const seen = new Set(EVAL.flatMap(([lat]) => lat.toLowerCase().split(/\s+/)));
 for (const l of fs.readFileSync(path.join(here, 'overrides.tsv'), 'utf8').split('\n')) if (l && !l.startsWith('#')) seen.add(l.split('\t')[0].toLowerCase());
+// English words and translations whose label is not a spelling of the word (Tamar: "messiah, that's english")
+for (const w of ['messiah', 'responsa', 'deut', 'halachic', 'halachically', 'maimonides', 'rabbis']) seen.add(w);
 const near = (w) => [w, w + 'h', w.replace(/h$/, '')];
 
 const pool = [];
